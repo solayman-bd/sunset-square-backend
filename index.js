@@ -16,6 +16,7 @@ client.connect((err) => {
   const hotelCollection = client
     .db(`${process.env.DB_NAME}`)
     .collection("hotels");
+
   app.post("/addHotels", (req, res) => {
     const hotels = req.body;
     hotelCollection.insertMany(hotels).then((result) => {
