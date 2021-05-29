@@ -19,6 +19,9 @@ client.connect((err) => {
   const experienceCollection = client
     .db(`${process.env.DB_NAME}`)
     .collection("experience");
+  const homeFeatureCollection = client
+    .db(`${process.env.DB_NAME}`)
+    .collection("features");
 
   app.post("/addHotels", (req, res) => {
     const hotel = req.body;
@@ -36,6 +39,19 @@ client.connect((err) => {
     experienceCollection.insertMany(req.body).then((result) => {
       res.send(result.insertedCount > 0);
     });
+  });
+  app.post("/addHomeDetails", (req, res) => {
+    homeFeatureCollection.insertOne(req.body).then((result) => {
+      res.send(result.insertedCount > 0);
+    });
+  });
+  app.get("/homeDetails/:key", (req, res) => {
+    const providedKey = req.params.key;
+    homeFeatureCollection
+      .find({ key: providedKey })
+      .toArray((err, document) => {
+        res.send(document);
+      });
   });
   app.get("/hotels", (req, res) => {
     hotelCollection.find({}).toArray((error, documents) => {
