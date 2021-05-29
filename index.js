@@ -16,12 +16,25 @@ client.connect((err) => {
   const hotelCollection = client
     .db(`${process.env.DB_NAME}`)
     .collection("hotels");
+  const experienceCollection = client
+    .db(`${process.env.DB_NAME}`)
+    .collection("experience");
 
   app.post("/addHotels", (req, res) => {
-    const hotels = req.body;
-    hotelCollection.insertMany(hotels).then((result) => {
+    const hotel = req.body;
+    hotelCollection.insertOne(hotel).then((result) => {
       res.send(result.insertedCount > 0);
-      console.log(result);
+      // console.log(result);
+    });
+  });
+  app.get("/experiences", (req, res) => {
+    experienceCollection.find({}).toArray((err, documents) => {
+      res.send(documents);
+    });
+  });
+  app.post("/addExperience", (req, res) => {
+    experienceCollection.insertMany(req.body).then((result) => {
+      res.send(result.insertedCount > 0);
     });
   });
   app.get("/hotels", (req, res) => {
